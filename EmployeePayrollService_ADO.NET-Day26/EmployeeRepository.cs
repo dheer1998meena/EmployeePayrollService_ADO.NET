@@ -14,9 +14,9 @@ namespace EmployeePayrollService_ADO.NET_Day26
 {
     class EmployeeRepository
     {
-        //Specifying the connection string from the sql server connection.
+        ///Specifying the connection string from the sql server connection.
         public static string connectionString = @"Data Source=DESKTOP-4849HJR;Initial Catalog=payroll_service;Integrated Security=True;User ID=dheermeena;Password=Dheer@1998";
-        // Establishing the connection using the Sql
+        /// Establishing the connection using the Sql
         SqlConnection connection = new SqlConnection(connectionString);
 
         /// <summary>
