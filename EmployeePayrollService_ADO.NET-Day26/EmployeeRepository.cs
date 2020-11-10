@@ -35,7 +35,7 @@ namespace EmployeePayrollService_ADO.NET_Day26
         /// <summary>
         /// UC2 Ability for Employee Payroll Service to retrieve the Employee Payroll from the Database
         /// </summary>
-        public void GetAllEmployeeData()
+        public void GetAllEmployeeData(string query)
         {
             /// Creates a new connection for every method to avoid "ConnectionString property not initialized" exception
             DBConnection dbc = new DBConnection();
@@ -46,8 +46,6 @@ namespace EmployeePayrollService_ADO.NET_Day26
             {
                 using (connection)
                 {
-                    //Query to get all the data from table.
-                    string query = @"select * from dbo.employee_payroll";
                     //Opening the connection to the statrt mapping.
                     connection.Open();
                     //Implementing the command on the connection fetched database table.
@@ -214,6 +212,15 @@ namespace EmployeePayrollService_ADO.NET_Day26
             {
                 connection.Close();
             }
+        }
+        /// <summary>
+        /// UC5 Gets the employees details for a particular date range.
+        /// </summary>
+        /// <param name="date">The date.</param>
+        public void GetEmployeesFromForDateRange(string date)
+        {
+            string query = $@"select * from dbo.employee_payroll where StartDate between cast('{date}' as date) and cast(getdate() as date)";
+            GetAllEmployeeData(query);
         }
     }
 }
