@@ -17,10 +17,10 @@ namespace EmployeePayrollService_ADO.NET_Day26
             EmployeeRepository repository = new EmployeeRepository();
             ///UC1 Creating a method for checking for the validity of the connection.
             repository.EnsureDataBaseConnection();
-            ///UC2 Ability for Employee Payroll Service to retrieve the Employee Payroll from the Database
-            repository.GetAllEmployeeData();
             ///UC3 Updates the given empname with given salary into database.
             Console.WriteLine(repository.UpdateSalaryIntoDatabase("Terissa", 50000) ? "Update done successfully " : "Update Failed");
+            /// UC5 Gets the employees details for a particular date range.
+            repository.GetEmployeesFromForDateRange("2018 - 05 - 03");
         }
     }
 }
