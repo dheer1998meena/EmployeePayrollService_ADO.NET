@@ -12,48 +12,46 @@ using System.Text;
 
 namespace EmployeePayrollService_ADO.NET_Day26
 {
-    class EmployeeRepository
+
+    public class EmployeeRepository
     {
-
-        //Specifying the connection string from the sql server connection
-        public static string connectionString = @"Data Source=DESKTOP-4849HJR;Initial Catalog=payroll_service;Integrated Security=True;User ID=dheermeena;Password=Dheer@1998";
-        // Establishing the connection using the Sql
-        SqlConnection connection = new SqlConnection(connectionString);
-        //ReInitiallizing the connection using the sql for GetAllEmployeeData method.
-        SqlConnection connection1 = new SqlConnection(connectionString);
-        //ReInitiallizing the connection using the sql for update employee method.
-        SqlConnection connection2 = new SqlConnection(connectionString);
-
+        /// Ensuring the established connection using the Sql Connection specifying the property.
+        public static SqlConnection connection { get; set; }
 
         /// <summary>
         ///UC1 Creating a method for checking for the validity of the connection.
         /// </summary>
         public void EnsureDataBaseConnection()
         {
-            this.connection2.Open();
+            /// Creates a new connection for every method to avoid "ConnectionString property not initialized" exception
+            DBConnection dbc = new DBConnection();
+            connection = dbc.GetConnection();
             using (connection)
             {
                 Console.WriteLine("The Connection is created");
             }
-            this.connection2.Close();
+            connection.Close();
         }
         /// <summary>
         /// UC2 Ability for Employee Payroll Service to retrieve the Employee Payroll from the Database
         /// </summary>
         public void GetAllEmployeeData()
         {
+            /// Creates a new connection for every method to avoid "ConnectionString property not initialized" exception
+            DBConnection dbc = new DBConnection();
+            connection = dbc.GetConnection();
             //Creating Employee model class object
             EmployeeModel employee = new EmployeeModel();
             try
             {
-                using (connection1)
+                using (connection)
                 {
                     //Query to get all the data from table.
                     string query = @"select * from dbo.employee_payroll";
                     //Opening the connection to the statrt mapping.
-                    this.connection1.Open();
+                    connection.Open();
                     //Implementing the command on the connection fetched database table.
-                    SqlCommand command = new SqlCommand(query, connection1);
+                    SqlCommand command = new SqlCommand(query, connection);
                     //Executing the Sql datareaeder to fetch the all records.
                     SqlDataReader dataReader = command.ExecuteReader();
                     //Checking datareader has rows or not.
@@ -96,7 +94,7 @@ namespace EmployeePayrollService_ADO.NET_Day26
             //Always ensuring the closing of the connection
             finally
             {
-                this.connection1.Close();
+                connection.Close();
             }
 
         }
@@ -106,13 +104,15 @@ namespace EmployeePayrollService_ADO.NET_Day26
         /// <param name="model"></param>
         /// <returns></returns>
         public bool AddEmployee(EmployeeModel model)
-        {
+        { /// Creates a new connection for every method to avoid "ConnectionString property not initialized" exception
+            DBConnection dbc = new DBConnection();
+            connection = dbc.GetConnection();
             try
             {
-                using (this.connection)
+                using (connection)
                 {
                     //Creating a stored Procedure for adding employees into database
-                    SqlCommand command = new SqlCommand("dbo.SpAddEmployeeDetails", this.connection);
+                    SqlCommand command = new SqlCommand("dbo.SpAddEmployeeDetails", connection);
                     //Command type is set as stored procedure
                     command.CommandType = CommandType.StoredProcedure;
                     //Adding values from employeemodel to stored procedure using disconnected architecture
@@ -148,6 +148,43 @@ namespace EmployeePayrollService_ADO.NET_Day26
                 connection.Close();
             }
 
+        }
+        /// <summary>
+        /// UC3 Updates the given empname with given salary into database.
+        /// </summary>
+        /// <param name="empName"></param>
+        /// <param name="basicPay"></param>
+        /// <returns></returns>
+        public bool UpdateSalaryIntoDatabase(string empName, double basicPay)
+        {
+            DBConnection dbc = new DBConnection();
+            connection = dbc.GetConnection();
+            try
+            {
+                using (connection)
+                {
+                    connection.Open();
+                    string query = @"update dbo.employee_payroll set basic_pay=@p1 where EmpName=@p2";
+                    SqlCommand command = new SqlCommand(query, connection);
+                    command.Parameters.AddWithValue("@p1", basicPay);
+                    command.Parameters.AddWithValue("@p2", empName);
+                    var result = command.ExecuteNonQuery();
+                    connection.Close();
+                    if (result != 0)
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
         }
     }
 }
