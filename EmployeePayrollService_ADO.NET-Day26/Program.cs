@@ -24,6 +24,8 @@ namespace EmployeePayrollService_ADO.NET_Day26
             /// UC6 Getting the detail of salary ofthe employee joining grouped by gender and searched for a particular gender.
             repository.FindGroupedByGenderData("M");
             Console.ReadKey();
+            /// UC7 Inserts data into multiple tables using transactions.
+            repository.InsertIntoMultipleTablesWithTransactions();
         }
     }
 }
