@@ -392,7 +392,9 @@ namespace EmployeePayrollService_ADO.NET_Day26
                 }
             }
         }
-        /// UC 8 : Retrieves the employee details from multiple tables after implementing E-R concept.
+        /// <summary>
+        /// UC8 Retrieves the employee details from multiple tables after implementing E-R concept.
+        /// </summary>
         public void RetrieveEmployeeDetailsFromMultipleTables()
         
         {
